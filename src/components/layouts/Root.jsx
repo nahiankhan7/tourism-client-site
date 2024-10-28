@@ -6,9 +6,9 @@ import Footer from "./Footer";
 const Root = () => {
   return (
     <div className="font-roboto">
-      <NavBar></NavBar>
-      <Outlet></Outlet>
-      <Footer></Footer>
+      <NavBar />
+      <Outlet />
+      <Footer />
     </div>
   );
 };

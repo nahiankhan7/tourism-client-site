@@ -12,32 +12,32 @@ import Register from "../pages/Register/Register";
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <Root></Root>,
-    errorElement: <ErrorPage></ErrorPage>,
+    element: <Root />,
+    errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
-        element: <Home></Home>,
+        path: "",
+        element: <Home />,
       },
       {
-        path: "/all-tourist-spots",
-        element: <AllTouristSpots></AllTouristSpots>,
+        path: "all-tourist-spots",
+        element: <AllTouristSpots />,
       },
       {
-        path: "/add-tourist-spot",
-        element: <AddTouristSpot></AddTouristSpot>,
+        path: "add-tourist-spot",
+        element: <AddTouristSpot />,
       },
       {
-        path: "/my-list",
-        element: <MyList></MyList>,
+        path: "my-list",
+        element: <MyList />,
       },
       {
-        path: "/login",
-        element: <Login></Login>,
+        path: "login",
+        element: <Login />,
       },
       {
-        path: "/register",
-        element: <Register></Register>,
+        path: "register",
+        element: <Register />,
       },
     ],
   },

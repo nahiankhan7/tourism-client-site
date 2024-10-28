@@ -33,8 +33,8 @@ const AddTouristSpot = () => {
     console.log(touristSpoValue);
   };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg max-w-4xl w-full shadow-lg my-4 mx-2 md:mx-0">
+    <div className="flex items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
+      <div className="bg-white/80 p-6 rounded-lg max-w-4xl w-full shadow-lg md:mx-0">
         <h1 className="my-8 text-3xl font-bold text-center">
           Add Tourist Spot
         </h1>

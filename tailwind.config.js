@@ -6,6 +6,9 @@ export default {
       fontFamily: {
         roboto: ["Roboto", "sans-serif"],
       },
+      backgroundImage: {
+        "tourist-bg": "url('./src/assets/images/add-tourist-bg.jpg')",
+      },
     },
   },
   plugins: [],
