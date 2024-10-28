@@ -1,6 +1,6 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Root from "../layouts/Root";
+import Root from "../components/layouts/Root";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import Home from "../pages/Home/Home";
 import AllTouristSpots from "../pages/AllTouristSpots/AllTouristSpots";
