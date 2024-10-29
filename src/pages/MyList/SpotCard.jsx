@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const SpotCard = ({ touristSpot }) => {
+const SpotCard = ({ touristSpot, spotCard, setSpotCard }) => {
   const { _id, imageUrl, country, fullName, touristSpotName } = touristSpot;
 
   const handleDeleteSpot = (_id) => {
@@ -23,7 +23,12 @@ const SpotCard = ({ touristSpot }) => {
         fetch(`http://localhost:5000/tourist-spot/${_id}`, {
           method: "DELETE",
         })
-          .then((res) => res.json())
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return res.json();
+          })
           .then((data) => {
             console.log(data);
             if (data.deletedCount > 0) {
@@ -32,7 +37,23 @@ const SpotCard = ({ touristSpot }) => {
                 text: "Your Spot has been deleted.",
                 icon: "success",
               });
+              const remaining = spotCard.filter((spot) => spot._id !== _id);
+              setSpotCard(remaining);
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "Spot could not be deleted.",
+                icon: "error",
+              });
             }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "There was a problem deleting the spot.",
+              icon: "error",
+            });
           });
       }
     });

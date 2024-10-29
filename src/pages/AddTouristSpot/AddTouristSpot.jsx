@@ -50,7 +50,7 @@ const AddTouristSpot = () => {
       })
       .then((data) => {
         console.log(data);
-        if (data.insertedId > 0) {
+        if (data.insertedId) {
           Swal.fire({
             title: "Success!",
             text: "Tourist Spot Added Successfully",

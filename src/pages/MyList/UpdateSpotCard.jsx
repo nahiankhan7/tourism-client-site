@@ -74,8 +74,6 @@ const UpdateSpotCard = () => {
             icon: "success",
             confirmButtonText: "Okay",
           });
-
-          form.reset();
         }
       })
       .catch((error) => {

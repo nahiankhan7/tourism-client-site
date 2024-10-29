@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import SpotCard from "./SpotCard";
 
 const MyList = () => {
   const { isError, message, data } = useLoaderData();
+  const [spotCard, setSpotCard] = useState(data);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen flex flex-col">
@@ -16,7 +17,12 @@ const MyList = () => {
       {data.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-center gap-8">
           {data.map((touristSpot) => (
-            <SpotCard key={touristSpot._id} touristSpot={touristSpot} />
+            <SpotCard
+              key={touristSpot._id}
+              touristSpot={touristSpot}
+              spotCard={spotCard}
+              setSpotCard={setSpotCard}
+            />
           ))}
         </div>
       ) : (
