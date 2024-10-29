@@ -1,8 +1,25 @@
 import React from "react";
+import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const AddTouristSpot = () => {
-  const addTouristSpot = (event) => {
+const UpdateSpotCard = () => {
+  const { isError, message, data } = useLoaderData();
+  const {
+    _id,
+    imageUrl,
+    country,
+    fullName,
+    email,
+    touristSpotName,
+    location,
+    averageCost,
+    seasonality,
+    travelTime,
+    totalVisitorPerYear,
+    shortDescription,
+  } = data;
+
+  const updateTouristSpot = (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -18,7 +35,7 @@ const AddTouristSpot = () => {
     const shortDescription = form.short_description.value;
     const imageUrl = form.image_url.value;
 
-    const touristSpotValue = {
+    const updatedTouristSpotValue = {
       country,
       fullName,
       email,
@@ -31,16 +48,15 @@ const AddTouristSpot = () => {
       shortDescription,
       imageUrl,
     };
+    console.log(updatedTouristSpotValue);
 
-    console.log(touristSpotValue);
-
-    // Send data to the server
-    fetch("http://localhost:5000/tourist-spot", {
-      method: "POST",
+    // Update data to the server
+    fetch(`http://localhost:5000/tourist-spot/${_id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(touristSpotValue),
+      body: JSON.stringify(updatedTouristSpotValue),
     })
       .then((res) => {
         if (!res.ok) {
@@ -50,10 +66,11 @@ const AddTouristSpot = () => {
       })
       .then((data) => {
         console.log(data);
-        if (data.insertedId > 0) {
+
+        if (data.modifiedCount > 0) {
           Swal.fire({
             title: "Success!",
-            text: "Tourist Spot Added Successfully",
+            text: "Tourist Spot Updated Successfully",
             icon: "success",
             confirmButtonText: "Okay",
           });
@@ -65,7 +82,7 @@ const AddTouristSpot = () => {
         console.error(error);
         Swal.fire({
           title: "Error!",
-          text: "Failed to add tourist spot",
+          text: "Failed to update tourist spot",
           icon: "error",
           confirmButtonText: "Okay",
         });
@@ -76,10 +93,17 @@ const AddTouristSpot = () => {
     <div className="flex items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
       <div className="bg-white/80 p-6 rounded-lg max-w-4xl w-full shadow-lg md:mx-0">
         <h1 className="my-8 text-3xl font-bold text-center">
-          Add Tourist Spot
+          Update Tourist Spot
         </h1>
 
-        <form onSubmit={addTouristSpot} className="flex flex-col space-y-6">
+        {/* Error message display */}
+        {isError && (
+          <div className="mb-4 p-3 bg-red-200 text-red-800 rounded-md">
+            {message}
+          </div>
+        )}
+
+        <form onSubmit={updateTouristSpot} className="flex flex-col space-y-6">
           {/* Country name dropdown */}
           <div>
             <label
@@ -90,10 +114,9 @@ const AddTouristSpot = () => {
             <select
               id="country"
               name="country"
-              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500">
-              <option value="Bangladesh" selected>
-                Bangladesh
-              </option>
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              defaultValue={country || "Bangladesh"}>
+              <option value="Bangladesh">Bangladesh</option>
               <option value="Thailand">Thailand</option>
               <option value="Indonesia">Indonesia</option>
               <option value="Malaysia">Malaysia</option>
@@ -114,6 +137,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="full_name"
                 placeholder="Enter your full name"
+                defaultValue={fullName}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -128,6 +152,7 @@ const AddTouristSpot = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
+                defaultValue={email}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -145,6 +170,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="tourists_spot_name"
                 placeholder="Enter the spot name"
+                defaultValue={touristSpotName}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -159,6 +185,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="location"
                 placeholder="Enter the location"
+                defaultValue={location}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -176,6 +203,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="average_cost"
                 placeholder="Enter average cost"
+                defaultValue={averageCost}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -190,6 +218,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="seasonality"
                 placeholder="Enter seasonality"
+                defaultValue={seasonality}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -207,6 +236,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="travel_time"
                 placeholder="Enter travel time"
+                defaultValue={travelTime}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -221,6 +251,7 @@ const AddTouristSpot = () => {
                 type="text"
                 name="total_visitors_per_year"
                 placeholder="Enter total visitors per year"
+                defaultValue={totalVisitorPerYear}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -237,6 +268,7 @@ const AddTouristSpot = () => {
               name="short_description"
               rows="5"
               placeholder="Enter a short description"
+              defaultValue={shortDescription}
               className="block resize-none w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
             />
           </div>
@@ -252,6 +284,7 @@ const AddTouristSpot = () => {
               type="text"
               name="image_url"
               placeholder="Enter image URL"
+              defaultValue={imageUrl}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
             />
           </div>
@@ -260,7 +293,7 @@ const AddTouristSpot = () => {
             <button
               className="bg-orange-500 w-full text-white py-3 text-xl rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="submit">
-              Add
+              Update
             </button>
           </div>
         </form>
@@ -269,4 +302,4 @@ const AddTouristSpot = () => {
   );
 };
 
-export default AddTouristSpot;
+export default UpdateSpotCard;
