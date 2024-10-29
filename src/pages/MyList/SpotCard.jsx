@@ -3,13 +3,14 @@ import Swal from "sweetalert2";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const SpotCard = ({ touristSpot, spotCard, setSpotCard }) => {
   const { _id, imageUrl, country, fullName, touristSpotName } = touristSpot;
 
-  const handleDeleteSpot = (_id) => {
+  const handleDeleteSpot = async (_id) => {
     console.log(_id);
-    Swal.fire({
+    const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
@@ -17,46 +18,39 @@ const SpotCard = ({ touristSpot, spotCard, setSpotCard }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Delete the spot from the database
-        fetch(`http://localhost:5000/tourist-spot/${_id}`, {
-          method: "DELETE",
-        })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return res.json();
-          })
-          .then((data) => {
-            console.log(data);
-            if (data.deletedCount > 0) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your Spot has been deleted.",
-                icon: "success",
-              });
-              const remaining = spotCard.filter((spot) => spot._id !== _id);
-              setSpotCard(remaining);
-            } else {
-              Swal.fire({
-                title: "Error!",
-                text: "Spot could not be deleted.",
-                icon: "error",
-              });
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            Swal.fire({
-              title: "Error!",
-              text: "There was a problem deleting the spot.",
-              icon: "error",
-            });
-          });
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:5000/tourist-spot/${_id}`
+        );
+        const data = response.data;
+
+        if (data.deletedCount > 0) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your Spot has been deleted.",
+            icon: "success",
+          });
+          const remaining = spotCard.filter((spot) => spot._id !== _id);
+          setSpotCard(remaining);
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: "Spot could not be deleted.",
+            icon: "error",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "There was a problem deleting the spot.",
+          icon: "error",
+        });
+      }
+    }
   };
 
   return (
