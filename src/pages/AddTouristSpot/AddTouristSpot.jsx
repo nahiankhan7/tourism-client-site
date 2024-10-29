@@ -1,6 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AddTouristSpot = () => {
+  const navigate = useNavigate();
+
   const addTouristSpot = (event) => {
     event.preventDefault();
     const form = event.target;
@@ -16,7 +20,7 @@ const AddTouristSpot = () => {
     const shortDescription = form.short_description.value;
     const imageUrl = form.image_url.value;
 
-    const touristSpoValue = {
+    const touristSpotValue = {
       country,
       fullName,
       email,
@@ -29,8 +33,29 @@ const AddTouristSpot = () => {
       shortDescription,
       imageUrl,
     };
+    console.log(touristSpotValue);
 
-    console.log(touristSpoValue);
+    // Send data to the server
+    fetch("http://localhost:5000/tourist-spot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(touristSpotValue),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          Swal.fire({
+            title: "Success!",
+            text: "Tourist spot added successfully",
+            icon: "success",
+            confirmButtonText: "Okay",
+          });
+          form.reset();
+          navigate("/my-list");
+        }
+      });
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
