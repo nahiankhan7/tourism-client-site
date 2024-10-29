@@ -1,14 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Register = () => {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const validatePassword = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const isValidLength = password.length >= 6;
+
+    return hasUpperCase && hasLowerCase && isValidLength;
+  };
+
+  const handleRegisterSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const nameValue = form.name.value;
+    const emailValue = form.email.value;
+    const photoValue = form.photo.value;
+    const passwordValue = form.password.value;
+    const registerData = { nameValue, emailValue, photoValue, passwordValue };
+
+    if (validatePassword(password)) {
+      console.log(registerData);
+
+      setError("");
+    } else {
+      setError(
+        "Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long."
+      );
+    }
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Register Form
         </h2>
-        <form className="space-y-4">
+        <form onSubmit={handleRegisterSubmit} className="space-y-4">
           <div>
             <label
               htmlFor="name"
@@ -68,10 +98,12 @@ const Register = () => {
               id="password"
               name="password"
               required
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+          {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
           <div className="flex items-center space-x-2">
             <span>Already have an account?</span>
             <Link to="/login" className="text-blue-500 hover:underline">

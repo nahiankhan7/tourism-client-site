@@ -14,10 +14,16 @@ const Login = () => {
     return hasUpperCase && hasLowerCase && isValidLength;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleLoginSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const emailValue = form.email.value;
+    const passwordValue = form.password.value;
+    const loginData = { emailValue, passwordValue };
+
     if (validatePassword(password)) {
-      console.log("Password is valid. Submitting form...");
+      console.log(loginData);
+
       setError("");
     } else {
       setError(
@@ -30,7 +36,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">Login Form</h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleLoginSubmit}>
           <div>
             <label
               htmlFor="email"
