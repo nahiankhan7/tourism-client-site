@@ -81,15 +81,19 @@ const SpotCard = ({ touristSpot, spotCard, setSpotCard }) => {
         </p>
 
         <div className="flex flex-col md:flex-row items-center justify-end gap-4 mt-4">
-          <button className="bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-200 w-full md:w-auto">
+          <Link
+            to={`/tourist-spot-details-page/${_id}`}
+            className="bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-200 w-full md:w-auto">
             View Details
-          </button>
+          </Link>
+
           <Link
             to={`/update-spot-card/${_id}`}
             className="bg-orange-600 flex items-center justify-center text-white font-semibold py-2 px-4 rounded hover:bg-orange-700 transition duration-200 w-full md:w-auto">
             Edit
             <FaEdit className="ml-2" />
           </Link>
+
           <button
             onClick={() => handleDeleteSpot(_id)}
             className="bg-red-600 text-white flex items-center justify-center font-semibold py-2 text-2xl px-4 rounded hover:bg-red-700 transition duration-200 w-full md:w-auto">

@@ -10,6 +10,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import axios from "axios";
 import UpdateSpotCard from "../pages/MyList/UpdateSpotCard";
+import TouristSpotDetailsPage from "../pages/TouristSpotDetailsPage/TouristSpotDetailsPage";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -57,6 +58,12 @@ const routes = createBrowserRouter([
       {
         path: "update-spot-card/:id",
         element: <UpdateSpotCard />,
+        loader: ({ params }) =>
+          fetchWithErrorHandling(`${BASE_URL}/tourist-spot/${params.id}`),
+      },
+      {
+        path: "tourist-spot-details-page/:id",
+        element: <TouristSpotDetailsPage />,
         loader: ({ params }) =>
           fetchWithErrorHandling(`${BASE_URL}/tourist-spot/${params.id}`),
       },
