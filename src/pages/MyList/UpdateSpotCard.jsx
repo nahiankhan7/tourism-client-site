@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -19,7 +20,7 @@ const UpdateSpotCard = () => {
     shortDescription,
   } = data;
 
-  const updateTouristSpot = (event) => {
+  const updateTouristSpot = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -48,43 +49,33 @@ const UpdateSpotCard = () => {
       shortDescription,
       imageUrl,
     };
+
     console.log(updatedTouristSpotValue);
 
     // Update data to the server
-    fetch(`http://localhost:5000/tourist-spot/${_id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedTouristSpotValue),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/tourist-spot/${_id}`,
+        updatedTouristSpotValue
+      );
 
-        if (data.modifiedCount > 0) {
-          Swal.fire({
-            title: "Success!",
-            text: "Tourist Spot Updated Successfully",
-            icon: "success",
-            confirmButtonText: "Okay",
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
+      if (res.data.modifiedCount > 0) {
         Swal.fire({
-          title: "Error!",
-          text: "Failed to update tourist spot",
-          icon: "error",
+          title: "Success!",
+          text: "Tourist Spot Updated Successfully",
+          icon: "success",
           confirmButtonText: "Okay",
         });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to update tourist spot",
+        icon: error.response ? error.response.data.message : error.message,
+        confirmButtonText: "Okay",
       });
+    }
   };
 
   return (

@@ -41,6 +41,7 @@ const routes = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+        loader: () => fetchWithErrorHandling(`${BASE_URL}/tourist-spot`),
       },
       {
         path: "all-tourist-spots",

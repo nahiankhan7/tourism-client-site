@@ -1,8 +1,10 @@
+import axios from "axios";
 import React from "react";
+import { json } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const AddTouristSpot = () => {
-  const addTouristSpot = (event) => {
+  const addTouristSpot = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -34,42 +36,28 @@ const AddTouristSpot = () => {
 
     console.log(touristSpotValue);
 
-    // Send data to the server
-    fetch("http://localhost:5000/tourist-spot", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(touristSpotValue),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        if (data.insertedId) {
-          Swal.fire({
-            title: "Success!",
-            text: "Tourist Spot Added Successfully",
-            icon: "success",
-            confirmButtonText: "Okay",
-          });
-
-          form.reset();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        Swal.fire({
-          title: "Error!",
-          text: "Failed to add tourist spot",
-          icon: "error",
-          confirmButtonText: "Okay",
-        });
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/tourist-spot",
+        touristSpotValue
+      );
+      console.log(res.data);
+      Swal.fire({
+        title: "Success!",
+        text: "Tourist spot added successfully",
+        icon: "success",
+        confirmButtonText: "Okay",
       });
+      form.reset();
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Tourist spot addition failed!",
+        text: error.response ? error.response.data.message : error.message,
+        icon: "error",
+        confirmButtonText: "Okay",
+      });
+    }
   };
 
   return (
