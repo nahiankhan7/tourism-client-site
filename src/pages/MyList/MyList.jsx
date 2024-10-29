@@ -8,7 +8,7 @@ const MyList = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen flex flex-col">
       <div className="text-center my-8">
-        <h2 className="text-4xl font-bold text-gray-800 mb-2">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
           My List Data Collection: {data.length}
         </h2>
         {isError && <p className="text-red-600 mt-2">{message}</p>}
