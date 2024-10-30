@@ -1,22 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLoaderData } from "react-router-dom";
+import { ColorRing } from "react-loader-spinner";
 
 const TouristSpotDetailsPage = () => {
   const { isError, message, data } = useLoaderData();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const {
-    imageUrl,
-    country,
-    fullName,
-    email,
-    touristSpotName,
-    location,
-    averageCost,
-    seasonality,
-    travelTime,
-    totalVisitorPerYear,
-    shortDescription,
-  } = data;
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <ColorRing
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="color-ring-loading"
+          wrapperClass="color-ring-wrapper"
+          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -29,32 +38,33 @@ const TouristSpotDetailsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
           <div className="col-span-2">
             <img
-              src={imageUrl}
-              alt={touristSpotName}
+              src={data.imageUrl}
+              alt={data.touristSpotName}
               className="w-full object-cover h-64 sm:h-80 md:h-full rounded-lg shadow"
             />
           </div>
 
           <div className="col-span-1 flex flex-col justify-center ml-0 md:ml-4 space-y-2">
-            <h1 className="text-2xl font-bold mb-2">{touristSpotName}</h1>
+            <h1 className="text-2xl font-bold mb-2">{data.touristSpotName}</h1>
             <ul className="space-y-2">
               <li>
-                <strong>Country:</strong> {country}
+                <strong>Country:</strong> {data.country}
               </li>
               <li>
-                <strong>Location:</strong> {location}
+                <strong>Location:</strong> {data.location}
               </li>
               <li>
-                <strong>Average Cost:</strong> ${averageCost}
+                <strong>Average Cost:</strong> ${data.averageCost}
               </li>
               <li>
-                <strong>Seasonality:</strong> {seasonality}
+                <strong>Seasonality:</strong> {data.seasonality}
               </li>
               <li>
-                <strong>Travel Time:</strong> {travelTime} Days
+                <strong>Travel Time:</strong> {data.travelTime} Days
               </li>
               <li>
-                <strong>Total Visitors per Year:</strong> {totalVisitorPerYear}
+                <strong>Total Visitors per Year:</strong>{" "}
+                {data.totalVisitorPerYear}
               </li>
             </ul>
 
@@ -62,10 +72,10 @@ const TouristSpotDetailsPage = () => {
               <h2 className="text-lg font-semibold">Contact Information:</h2>
               <ul className="space-y-1">
                 <li>
-                  <strong>Name:</strong> {fullName}
+                  <strong>Name:</strong> {data.fullName}
                 </li>
                 <li>
-                  <strong>Email:</strong> {email}
+                  <strong>Email:</strong> {data.email}
                 </li>
               </ul>
             </div>
@@ -73,7 +83,7 @@ const TouristSpotDetailsPage = () => {
         </div>
         <div className="p-6 border-t border-gray-300">
           <h2 className="text-lg font-semibold">Description:</h2>
-          <p>{shortDescription}</p>
+          <p>{data.shortDescription}</p>
         </div>
       </div>
     </div>

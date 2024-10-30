@@ -11,6 +11,7 @@ import Register from "../pages/Register/Register";
 import axios from "axios";
 import UpdateSpotCard from "../pages/MyList/UpdateSpotCard";
 import TouristSpotDetailsPage from "../pages/TouristSpotDetailsPage/TouristSpotDetailsPage";
+import PrivateRoute from "./PrivateRoute";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -46,14 +47,23 @@ const routes = createBrowserRouter([
       {
         path: "all-tourist-spots",
         element: <AllTouristSpots />,
+        loader: () => fetchWithErrorHandling(`${BASE_URL}/tourist-spot`),
       },
       {
         path: "add-tourist-spot",
-        element: <AddTouristSpot />,
+        element: (
+          <PrivateRoute>
+            <AddTouristSpot />
+          </PrivateRoute>
+        ),
       },
       {
         path: "my-list",
-        element: <MyList />,
+        element: (
+          <PrivateRoute>
+            <MyList />
+          </PrivateRoute>
+        ),
         loader: () => fetchWithErrorHandling(`${BASE_URL}/tourist-spot`),
       },
       {
@@ -64,7 +74,11 @@ const routes = createBrowserRouter([
       },
       {
         path: "tourist-spot-details-page/:id",
-        element: <TouristSpotDetailsPage />,
+        element: (
+          <PrivateRoute>
+            <TouristSpotDetailsPage />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetchWithErrorHandling(`${BASE_URL}/tourist-spot/${params.id}`),
       },
