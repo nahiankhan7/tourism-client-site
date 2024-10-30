@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { loginUser } = useContext(AuthContext);
 
   const validatePassword = (password) => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -14,21 +16,29 @@ const Login = () => {
     return hasUpperCase && hasLowerCase && isValidLength;
   };
 
-  const handleLoginSubmit = (event) => {
+  const handleLoginSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const emailValue = form.email.value;
     const passwordValue = form.password.value;
     const loginData = { emailValue, passwordValue };
 
-    if (validatePassword(password)) {
-      console.log(loginData);
+    try {
+      if (validatePassword(passwordValue)) {
+        console.log(loginData);
 
-      setError("");
-    } else {
-      setError(
-        "Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long."
-      );
+        const result = await loginUser(emailValue, passwordValue);
+        console.log(result.user);
+
+        setError("");
+      } else {
+        setError(
+          "Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long."
+        );
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Login failed. Please check your email and password.");
     }
   };
 

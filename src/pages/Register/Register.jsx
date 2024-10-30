@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { createNewUser } = useContext(AuthContext);
 
   const validatePassword = (password) => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -13,7 +17,7 @@ const Register = () => {
     return hasUpperCase && hasLowerCase && isValidLength;
   };
 
-  const handleRegisterSubmit = (event) => {
+  const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const nameValue = form.name.value;
@@ -22,16 +26,37 @@ const Register = () => {
     const passwordValue = form.password.value;
     const registerData = { nameValue, emailValue, photoValue, passwordValue };
 
-    if (validatePassword(password)) {
-      console.log(registerData);
+    try {
+      if (validatePassword(passwordValue)) {
+        console.log(registerData);
 
-      setError("");
-    } else {
-      setError(
-        "Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long."
-      );
+        const result = await createNewUser(emailValue, passwordValue);
+        console.log(result.user);
+
+        Swal.fire({
+          title: "Success!",
+          text: "Registration successful.",
+          icon: "success",
+          confirmButtonText: "Okay",
+        });
+
+        setError("");
+      } else {
+        setError(
+          "Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long."
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "Okay",
+      });
     }
   };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

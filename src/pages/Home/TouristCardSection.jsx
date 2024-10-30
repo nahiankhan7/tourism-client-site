@@ -5,7 +5,7 @@ const TouristCardSection = ({ cardData }) => {
   const { _id, imageUrl, country, fullName, touristSpotName } = cardData;
 
   return (
-    <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="max-w-sm mx-auto bg-white rounded-lg overflow-hidden mr-4 ml-4">
       <img
         className="w-full h-48 object-cover"
         src={imageUrl}
