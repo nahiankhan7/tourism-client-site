@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 const AllSpotCard = ({ allSpot }) => {
   const { _id, imageUrl, country, fullName, touristSpotName } = allSpot;
-  console.log("use id::: ", _id);
 
   return (
     <div className="max-w-md w-full rounded-lg overflow-hidden shadow-lg bg-white transform transition duration-300 hover:shadow-2xl">

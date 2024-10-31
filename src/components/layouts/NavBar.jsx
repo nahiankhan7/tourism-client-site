@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import "react-tooltip/dist/react-tooltip.css";
+import { Tooltip } from "react-tooltip";
 import {
   FaUser,
   FaSignInAlt,
@@ -25,8 +27,8 @@ const NavBar = () => {
       <NavLink
         to="/"
         className={({ isActive }) =>
-          `text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
-            isActive ? "bg-[#007BFF80] py-2 px-4" : "py-1 px-3"
+          `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
+            isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
           }`
         }>
         Home
@@ -34,8 +36,8 @@ const NavBar = () => {
       <NavLink
         to="/all-tourist-spots"
         className={({ isActive }) =>
-          `text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
-            isActive ? "bg-[#007BFF80] py-2 px-4" : "py-1 px-3"
+          `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
+            isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
           }`
         }>
         All Tourist Spots
@@ -43,8 +45,8 @@ const NavBar = () => {
       <NavLink
         to="/add-tourist-spot"
         className={({ isActive }) =>
-          `text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
-            isActive ? "bg-[#007BFF80] py-2 px-4" : "py-1 px-3"
+          `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
+            isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
           }`
         }>
         Add Tourist Spot
@@ -52,8 +54,8 @@ const NavBar = () => {
       <NavLink
         to="/my-list"
         className={({ isActive }) =>
-          `text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
-            isActive ? "bg-[#007BFF80] py-2 px-4" : "py-1 px-3"
+          `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
+            isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
           }`
         }>
         My List{" "}
@@ -76,10 +78,28 @@ const NavBar = () => {
 
           {user ? (
             <div className="md:flex items-center space-x-4 hidden">
-              <p className="text-white">{user.email}</p>
+              <div className="flex items-center justify-center rounded-full ring-2 ring-sky-600 hover:ring-sky-400 duration-200 p-1">
+                <Link id="my-anchor-element">
+                  <img
+                    src={user.photoURL}
+                    className="w-10 h-10 rounded-full object-cover"
+                    alt={user.displayName}
+                  />
+                </Link>
+                <Tooltip
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                  }}
+                  place="left"
+                  anchorSelect="#my-anchor-element"
+                  content={user.displayName}
+                />
+              </div>
+
               <button
                 onClick={handleLogOut}
-                className="flex items-center text-white hover:text-blue-200 transition duration-200">
+                className="flex items-center text-gray-200 hover:text-[#007BFF] transition duration-200">
                 <FaSignOutAlt className="mr-2" /> Logout
               </button>
             </div>
@@ -88,8 +108,8 @@ const NavBar = () => {
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  `flex items-center text-white hover:text-blue-200 transition duration-200 ${
-                    isActive ? "text-blue-300 py-2 px-4" : ""
+                  `flex items-center text-gray-200 hover:text-[#007BFF] transition duration-200 ${
+                    isActive ? "text-[#007BFF] py-2 px-4" : ""
                   }`
                 }
                 aria-label="Login">
@@ -99,8 +119,8 @@ const NavBar = () => {
               <NavLink
                 to="/register"
                 className={({ isActive }) =>
-                  `flex items-center text-white hover:text-blue-200 transition duration-200 ${
-                    isActive ? "text-blue-300 py-2 px-4" : ""
+                  `flex items-center text-gray-200 hover:text-[#007BFF] transition duration-200 ${
+                    isActive ? "text-[#007BFF] py-2 px-4" : ""
                   }`
                 }
                 aria-label="Register">
@@ -126,11 +146,28 @@ const NavBar = () => {
           <div className="md:hidden bg-[#1A1A19] mt-6 mb-2">
             <div className="flex flex-col space-y-3">{navLinks}</div>
             {user ? (
-              <div className="flex items-center space-x-4 mt-4 md:mt-0">
-                <p className="text-white">{user.email}</p>
+              <div className="flex items-center justify-end space-x-4 mt-6 md:mt-0">
+                <div className="flex items-center justify-center rounded-full ring-2 ring-sky-500 hover:ring-sky-400 duration-200 p-1">
+                  <Link id="my-anchor-element">
+                    <img
+                      src={user.photoURL}
+                      className="w-10 h-10 rounded-full object-cover"
+                      alt={user.displayName}
+                    />
+                  </Link>
+                  <Tooltip
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                    place="left"
+                    anchorSelect="#my-anchor-element"
+                    content={user.displayName}
+                  />
+                </div>
                 <button
                   onClick={handleLogOut}
-                  className="flex items-center text-white hover:text-blue-200 transition duration-200">
+                  className="flex items-center text-gray-200 hover:text-[#007BFF] transition duration-200">
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
               </div>
@@ -139,8 +176,8 @@ const NavBar = () => {
                 <NavLink
                   to="/login"
                   className={({ isActive }) =>
-                    `text-white hover:text-blue-200 flex items-center transition duration-200 ${
-                      isActive ? "text-blue-300 py-2 px-4" : ""
+                    `text-gray-200 hover:text-[#007BFF] flex items-center transition duration-200 ${
+                      isActive ? "text-[#007BFF] py-2 px-4" : ""
                     }`
                   }>
                   <FaSignInAlt className="mr-2" /> Login
@@ -148,8 +185,8 @@ const NavBar = () => {
                 <NavLink
                   to="/register"
                   className={({ isActive }) =>
-                    `text-white hover:text-blue-200 flex items-center transition duration-200 ${
-                      isActive ? "text-blue-300 py-2 px-4" : ""
+                    `text-gray-200 hover:text-[#007BFF] flex items-center transition duration-200 ${
+                      isActive ? "text-[#007BFF] py-2 px-4" : ""
                     }`
                   }>
                   <FaUser className="mr-2" /> Register

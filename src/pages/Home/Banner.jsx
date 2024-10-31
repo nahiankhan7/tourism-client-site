@@ -32,14 +32,14 @@ const Banner = () => {
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full max-h-[600px] overflow-hidden">
       <Slider ref={sliderRef} {...settings}>
         {[slide1, slide2, slide3].map((slide, index) => (
           <div key={index} className="relative w-full h-full">
             <img
               src={slide}
               alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover bg-no-repeat bg-cover"
             />
           </div>
         ))}

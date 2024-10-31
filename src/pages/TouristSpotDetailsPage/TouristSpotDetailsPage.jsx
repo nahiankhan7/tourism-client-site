@@ -60,7 +60,7 @@ const TouristSpotDetailsPage = () => {
                 <strong>Seasonality:</strong> {data.seasonality}
               </li>
               <li>
-                <strong>Travel Time:</strong> {data.travelTime} Days
+                <strong>Travel Time:</strong> {data.travelTime}
               </li>
               <li>
                 <strong>Total Visitors per Year:</strong>{" "}

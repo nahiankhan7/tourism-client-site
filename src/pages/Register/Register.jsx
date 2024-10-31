@@ -1,38 +1,45 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 
 const Register = () => {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // State variables for handling user input and error messages
+  const [error, setError] = useState(""); // To store error messages
+  const [name, setName] = useState(""); // To store user's name
+  const [email, setEmail] = useState(""); // To store user's email
+  const [photo, setPhoto] = useState(""); // To store user's photo URL
+  const [password, setPassword] = useState(""); // To store user's password
 
-  const { createNewUser } = useContext(AuthContext);
+  // Extracting functions from AuthContext for user creation and profile update
+  const { createNewUser, updateUserProfile } = useContext(AuthContext);
 
+  // Hooks for routing
+  const location = useLocation(); // Current location
+  const navigate = useNavigate(); // Navigation function
+
+  // Function to validate the password according to specified criteria
   const validatePassword = (password) => {
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const isValidLength = password.length >= 6;
-
-    return hasUpperCase && hasLowerCase && isValidLength;
+    const hasUpperCase = /[A-Z]/.test(password); // Check for uppercase letters
+    const hasLowerCase = /[a-z]/.test(password); // Check for lowercase letters
+    const isValidLength = password.length >= 6; // Check for minimum length
+    return hasUpperCase && hasLowerCase && isValidLength; // Return true if all conditions are met
   };
 
+  // Function to handle form submission
   const handleRegisterSubmit = async (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const nameValue = form.name.value;
-    const emailValue = form.email.value;
-    const photoValue = form.photo.value;
-    const passwordValue = form.password.value;
-    const registerData = { nameValue, emailValue, photoValue, passwordValue };
+    event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      if (validatePassword(passwordValue)) {
-        console.log(registerData);
+      // Validate the password before creating the user
+      if (validatePassword(password)) {
+        const result = await createNewUser(email, password); // Create a new user
+        console.log(result.user); // Log the newly created user
 
-        const result = await createNewUser(emailValue, passwordValue);
-        console.log(result.user);
+        // Update user profile with name and photo URL
+        await updateUserProfile(name, photo);
 
+        // Display a success message using SweetAlert
         Swal.fire({
           title: "Success!",
           text: "Registration successful.",
@@ -40,14 +47,20 @@ const Register = () => {
           confirmButtonText: "Okay",
         });
 
-        setError("");
+        setError(""); // Clear any previous error messages
+
+        // Redirect the user to the previous location or the registration page
+        const redirectPath = location.state?.from || "/register";
+        navigate(redirectPath);
       } else {
+        // Set an error message if password validation fails
         setError(
           "Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long."
         );
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message); // Log any errors that occur
+      // Display an error message using SweetAlert
       Swal.fire({
         title: "Error!",
         text: error.message,
@@ -73,13 +86,13 @@ const Register = () => {
             <input
               type="text"
               id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)} // Update name state on change
               required
-              name="name"
               placeholder="Enter your name"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           <div>
             <label
               htmlFor="email"
@@ -89,29 +102,29 @@ const Register = () => {
             <input
               type="email"
               id="email"
-              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Update email state on change
               required
               placeholder="you@example.com"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           <div>
             <label
               htmlFor="photo"
               className="block text-sm font-medium text-gray-700">
-              Photo Url:
+              Photo URL:
             </label>
             <input
               type="text"
               id="photo"
+              value={photo}
+              onChange={(e) => setPhoto(e.target.value)} // Update photo state on change
               required
-              name="photo"
-              placeholder="Enter your photo url"
+              placeholder="Enter your photo URL"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           <div>
             <label
               htmlFor="password"
@@ -121,14 +134,15 @@ const Register = () => {
             <input
               type="password"
               id="password"
-              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} // Update password state on change
               required
-              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
+          {/* Display error message if exists */}
+          {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}{" "}
           <div className="flex items-center space-x-2">
             <span>Already have an account?</span>
             <Link to="/login" className="text-blue-500 hover:underline">
