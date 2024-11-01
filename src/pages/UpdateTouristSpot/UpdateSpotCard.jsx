@@ -3,6 +3,7 @@ import React from "react";
 import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
 import UpdateTouristBread from "../../components/shared/BreadCrumbs/UpdateTouristBread";
+import { BASE_URL } from "../../config/api.Config";
 
 const UpdateSpotCard = () => {
   const { isError, message, data } = useLoaderData();
@@ -56,7 +57,7 @@ const UpdateSpotCard = () => {
     // Update data to the server
     try {
       const res = await axios.put(
-        `http://localhost:5000/tourist-spot/${_id}`,
+        `${BASE_URL}/tourist-spot/${_id}`,
         updatedTouristSpotValue
       );
 

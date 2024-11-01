@@ -12,8 +12,7 @@ import axios from "axios";
 import UpdateSpotCard from "../pages/UpdateTouristSpot/UpdateSpotCard";
 import TouristSpotDetailsPage from "../pages/TouristSpotDetailsPage/TouristSpotDetailsPage";
 import PrivateRoute from "./PrivateRoute";
-
-const BASE_URL = "http://localhost:5000";
+import { BASE_URL } from "../config/api.Config";
 
 const fetchWithErrorHandling = async (url) => {
   try {

@@ -4,6 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../../config/api.Config";
 
 const SpotCard = ({ touristSpot, spotCard, setSpotCard }) => {
   const { _id, imageUrl, country, fullName, touristSpotName } = touristSpot;
@@ -22,9 +23,7 @@ const SpotCard = ({ touristSpot, spotCard, setSpotCard }) => {
 
     if (result.isConfirmed) {
       try {
-        const response = await axios.delete(
-          `http://localhost:5000/tourist-spot/${_id}`
-        );
+        const response = await axios.delete(`${BASE_URL}/tourist-spot/${_id}`);
         const data = response.data;
 
         if (data.deletedCount > 0) {

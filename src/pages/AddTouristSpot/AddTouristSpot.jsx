@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import AddTouristBread from "../../components/shared/BreadCrumbs/AddTouristBread";
+import { BASE_URL } from "../../config/api.Config";
 
 const AddTouristSpot = () => {
   // State to hold form input values
@@ -35,10 +36,7 @@ const AddTouristSpot = () => {
 
     try {
       // Send a POST request to the server with the form data
-      const res = await axios.post(
-        "http://localhost:5000/tourist-spot",
-        formData
-      );
+      const res = await axios.post(`${BASE_URL}/tourist-spot`, formData);
       console.log(res.data); // Log the response data
 
       // Show success alert using SweetAlert2
