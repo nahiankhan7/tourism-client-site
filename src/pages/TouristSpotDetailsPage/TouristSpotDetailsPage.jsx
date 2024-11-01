@@ -85,7 +85,13 @@ const TouristSpotDetailsPage = () => {
                       <strong>Name:</strong> {data.fullName}
                     </li>
                     <li>
-                      <strong>Email:</strong> {data.email}
+                      <strong>Email:</strong>{" "}
+                      <a
+                        className="text-blue-500 hover:underline"
+                        href={`mailto:${data.email}`}
+                        target="_blank">
+                        {data.email}
+                      </a>
                     </li>
                   </ul>
                 </div>
