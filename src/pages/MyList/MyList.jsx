@@ -12,6 +12,7 @@ const MyList = () => {
 
   useEffect(() => {
     if (data) {
+      setSpotCard(data); // Set spotCard to data
       setLoading(false);
     }
   }, [data]);
@@ -22,7 +23,11 @@ const MyList = () => {
         <MyListBread />
       </div>
       <div className="mb-8">
-        <img src={myListBanner} alt="" className="w-full h-auto object-cover" />
+        <img
+          src={myListBanner}
+          alt="My List Banner"
+          className="w-full h-auto object-cover"
+        />
       </div>
 
       <div className="p-4 flex flex-col">
@@ -39,9 +44,9 @@ const MyList = () => {
               colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
             />
           </div>
-        ) : data.length > 0 ? (
+        ) : spotCard.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
-            {data.map((touristSpot) => (
+            {spotCard.map((touristSpot) => (
               <SpotCard
                 key={touristSpot._id}
                 touristSpot={touristSpot}
