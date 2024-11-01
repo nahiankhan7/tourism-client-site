@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import AddTouristBread from "../../components/shared/BreadCrumbs/AddTouristBread";
 
 const AddTouristSpot = () => {
   // State to hold form input values
@@ -76,7 +77,10 @@ const AddTouristSpot = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
+      <div className="container mx-auto py-8 px-4 md:px-0">
+        <AddTouristBread />
+      </div>
       <div className="bg-white/80 p-6 rounded-lg max-w-4xl w-full shadow-lg md:mx-0">
         <h1 className="my-8 text-3xl font-bold text-center">
           Add Tourist Spot

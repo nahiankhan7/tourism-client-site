@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
+import UpdateTouristBread from "../../components/shared/BreadCrumbs/UpdateTouristBread";
 
 const UpdateSpotCard = () => {
   const { isError, message, data } = useLoaderData();
@@ -79,7 +80,10 @@ const UpdateSpotCard = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
+      <div className="container mx-auto py-8 px-4 md:px-0">
+        <UpdateTouristBread />
+      </div>
       <div className="bg-white/80 p-6 rounded-lg max-w-4xl w-full shadow-lg md:mx-0">
         <h1 className="my-8 text-3xl font-bold text-center">
           Update Tourist Spot

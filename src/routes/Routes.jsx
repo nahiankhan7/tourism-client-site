@@ -9,7 +9,7 @@ import MyList from "../pages/MyList/MyList";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import axios from "axios";
-import UpdateSpotCard from "../pages/MyList/UpdateSpotCard";
+import UpdateSpotCard from "../pages/UpdateTouristSpot/UpdateSpotCard";
 import TouristSpotDetailsPage from "../pages/TouristSpotDetailsPage/TouristSpotDetailsPage";
 import PrivateRoute from "./PrivateRoute";
 
