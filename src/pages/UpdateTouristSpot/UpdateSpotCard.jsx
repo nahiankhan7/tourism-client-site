@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
 import UpdateTouristBread from "../../components/shared/BreadCrumbs/UpdateTouristBread";
-import { BASE_URL } from "../../config/api.Config";
+import { BASE_URL, IMAGEBB_UPLOAD_API } from "../../config/api.Config";
 
 const UpdateSpotCard = () => {
   // Load data from the loader
@@ -64,10 +64,7 @@ const UpdateSpotCard = () => {
 
     try {
       // Send POST request to ImageBB API
-      const response = await axios.post(
-        "https://api.imgbb.com/1/upload?key=8087bba5313f68ecafd9f66c341eb2ce",
-        formData
-      );
+      const response = await axios.post(`${IMAGEBB_UPLOAD_API}`, formData);
       return response.data.data.url; // Return the URL of the uploaded image
     } catch (error) {
       console.error("Image upload error: ", error);

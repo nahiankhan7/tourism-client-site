@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import AddTouristBread from "../../components/shared/BreadCrumbs/AddTouristBread";
 import { AuthContext } from "../../providers/AuthProvider";
+import { IMAGEBB_ADD_API } from "../../config/api.Config";
 
 const AddTouristSpot = () => {
   const { user } = useContext(AuthContext); // Get user info from context
@@ -48,10 +49,7 @@ const AddTouristSpot = () => {
 
     try {
       // Send POST request to ImageBB API
-      const response = await axios.post(
-        "https://api.imgbb.com/1/upload?key=592bd119a2c238747c808a8c315852e4",
-        formData
-      );
+      const response = await axios.post(`${IMAGEBB_ADD_API}`, formData);
       return response.data.data.url; // Return the uploaded image URL
     } catch (error) {
       console.error("Image upload error: ", error);
