@@ -5,14 +5,14 @@ import AddTouristBread from "../../components/shared/BreadCrumbs/AddTouristBread
 import { AuthContext } from "../../providers/AuthProvider";
 
 const AddTouristSpot = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext); // Get user info from context
   console.log("User form add page ::: ", user);
 
   // State to hold form input values
   const [formData, setFormData] = useState({
     country: "Bangladesh", // Default selected country
-    fullName: `${user.displayName}`,
-    email: `${user.email}`,
+    fullName: `${user.displayName}`, // Pre-fill with user's display name
+    email: `${user.email}`, // Pre-fill with user's email
     touristSpotName: "",
     location: "",
     averageCost: "",
@@ -23,67 +23,109 @@ const AddTouristSpot = () => {
     imageUrl: "",
   });
 
-  // Handle input changes
+  const [file, setFile] = useState(null); // State to hold the uploaded file
+
+  // Handle changes in input fields
   const handleChange = (event) => {
-    const { name, value } = event.target; // Destructure name and value from the target
-    // Update the state based on the input name
+    const { name, value } = event.target; // Destructure name and value from target
     setFormData((prevData) => ({
       ...prevData,
       [name]: value, // Update the specific field in the form data
     }));
   };
 
-  // Function to handle form submission
-  const addTouristSpot = async (event) => {
-    event.preventDefault(); // Prevent the default form submission
+  // Handle changes in file input
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]); // Update file state with selected file
+  };
+
+  // Function to upload image to ImageBB
+  const uploadImage = async () => {
+    if (!file) return; // If no file is selected, exit the function
+
+    const formData = new FormData(); // Create a FormData object
+    formData.append("image", file); // Append the image file
 
     try {
-      // Send a POST request to the server with the form data
-      const res = await axios.post(
-        "http://localhost:5000/tourist-spot",
+      // Send POST request to ImageBB API
+      const response = await axios.post(
+        "https://api.imgbb.com/1/upload?key=592bd119a2c238747c808a8c315852e4",
         formData
       );
-      console.log(res.data); // Log the response data
-
-      // Show success alert using SweetAlert2
-      Swal.fire({
-        title: "Success!",
-        text: "Tourist spot added successfully",
-        icon: "success",
-        confirmButtonText: "Okay",
-      });
-
-      // Reset the form to initial state
-      setFormData({
-        country: "Bangladesh",
-        fullName: "",
-        email: "",
-        touristSpotName: "",
-        location: "",
-        averageCost: "",
-        seasonality: "",
-        travelTime: "",
-        totalVisitorPerYear: "",
-        shortDescription: "",
-        imageUrl: "",
-      });
+      return response.data.data.url; // Return the uploaded image URL
     } catch (error) {
-      console.log(error); // Log any errors
-
+      console.error("Image upload error: ", error);
       // Show error alert using SweetAlert2
       Swal.fire({
-        title: "Tourist spot addition failed!",
+        title: "Image upload failed!",
         text: error.response ? error.response.data.message : error.message,
         icon: "error",
         confirmButtonText: "Okay",
       });
+      return null; // Return null on error
+    }
+  };
+
+  // Function to handle form submission
+  const addTouristSpot = async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+
+    const uploadedImageUrl = await uploadImage(); // Upload the image and get the URL
+    if (uploadedImageUrl) {
+      // Update formData with the uploaded image URL
+      setFormData((prevData) => ({
+        ...prevData,
+        imageUrl: uploadedImageUrl,
+      }));
+
+      try {
+        // Send a POST request to the server with the form data
+        const res = await axios.post("http://localhost:5000/tourist-spot", {
+          ...formData,
+          imageUrl: uploadedImageUrl,
+        });
+        console.log(res.data); // Log the response data
+
+        // Show success alert using SweetAlert2
+        Swal.fire({
+          title: "Success!",
+          text: "Tourist spot added successfully",
+          icon: "success",
+          confirmButtonText: "Okay",
+        });
+
+        // Reset form to initial state
+        setFormData({
+          country: "Bangladesh",
+          fullName: `${user.displayName}`,
+          email: `${user.email}`,
+          touristSpotName: "",
+          location: "",
+          averageCost: "",
+          seasonality: "",
+          travelTime: "",
+          totalVisitorPerYear: "",
+          shortDescription: "",
+          imageUrl: "",
+        });
+        setFile(null); // Reset file input
+      } catch (error) {
+        console.log(error); // Log any errors
+        // Show error alert using SweetAlert2
+        Swal.fire({
+          title: "Tourist spot addition failed!",
+          text: error.response ? error.response.data.message : error.message,
+          icon: "error",
+          confirmButtonText: "Okay",
+        });
+      }
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-tourist-bg bg-cover bg-center bg-no-repeat p-4 md:p-6">
       <div className="container mx-auto py-8 px-4 md:px-0">
-        <AddTouristBread />
+        <AddTouristBread /> {/* Breadcrumb component */}
       </div>
       <div className="bg-white/80 p-6 rounded-lg max-w-4xl w-full shadow-lg md:mx-0">
         <h1 className="my-8 text-3xl font-bold text-center">
@@ -92,7 +134,7 @@ const AddTouristSpot = () => {
 
         {/* Form for adding a tourist spot */}
         <form onSubmit={addTouristSpot} className="flex flex-col space-y-6">
-          {/* Country name dropdown */}
+          {/* Country selection dropdown */}
           <div>
             <label
               htmlFor="country"
@@ -246,14 +288,14 @@ const AddTouristSpot = () => {
 
             <div className="w-full">
               <label
-                htmlFor="total_visitors_per_year"
+                htmlFor="total_visitor_per_year"
                 className="block text-lg font-medium text-gray-700 mb-2">
                 Total Visitors Per Year:
               </label>
               <input
-                type="text"
+                type="number"
                 name="totalVisitorPerYear" // Name corresponds to the state field
-                placeholder="Enter total visitors per year"
+                placeholder="Enter total visitors"
                 value={formData.totalVisitorPerYear} // Controlled component
                 onChange={handleChange} // Handle change for the input
                 required // Make this field required
@@ -280,19 +322,17 @@ const AddTouristSpot = () => {
             />
           </div>
 
-          {/* Image URL input field */}
+          {/* Image upload input field */}
           <div className="w-full">
             <label
-              htmlFor="image_url"
+              htmlFor="image"
               className="block text-lg font-medium text-gray-700 mb-2">
-              Image URL:
+              Upload Image:
             </label>
             <input
-              type="text"
-              name="imageUrl" // Name corresponds to the state field
-              placeholder="Enter image URL"
-              value={formData.imageUrl} // Controlled component
-              onChange={handleChange} // Handle change for the input
+              type="file"
+              accept="image/*" // Accept only image files
+              onChange={handleFileChange} // Handle change for the file input
               required // Make this field required
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
             />
@@ -302,8 +342,7 @@ const AddTouristSpot = () => {
           <div className="flex justify-center">
             <button
               className="bg-orange-500 w-full text-white py-3 text-xl rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              type="submit" // Submit the form
-            >
+              type="submit">
               Add
             </button>
           </div>

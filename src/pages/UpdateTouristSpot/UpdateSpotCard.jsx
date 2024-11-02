@@ -1,11 +1,12 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
 import UpdateTouristBread from "../../components/shared/BreadCrumbs/UpdateTouristBread";
 import { BASE_URL } from "../../config/api.Config";
 
 const UpdateSpotCard = () => {
+  // Load data from the loader
   const { isError, message, data } = useLoaderData();
   const {
     _id,
@@ -22,45 +23,95 @@ const UpdateSpotCard = () => {
     shortDescription,
   } = data;
 
+  // Initialize state for form values, pre-filled with data from loader
+  const [formValues, setFormValues] = useState({
+    country: country || "Bangladesh",
+    fullName,
+    email,
+    touristSpotName,
+    location,
+    averageCost,
+    seasonality,
+    travelTime,
+    totalVisitorPerYear,
+    shortDescription,
+    imageUrl,
+  });
+
+  // State to hold the uploaded file
+  const [file, setFile] = useState(null);
+
+  // Handle changes in form inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  // Handle changes in file input
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]); // Store the selected file in state
+  };
+
+  // Function to upload image to ImageBB
+  const uploadImage = async () => {
+    if (!file) return null; // If no file is selected, return null
+
+    const formData = new FormData(); // Create a FormData object to hold the file
+    formData.append("image", file); // Append the image file to form data
+
+    try {
+      // Send POST request to ImageBB API
+      const response = await axios.post(
+        "https://api.imgbb.com/1/upload?key=8087bba5313f68ecafd9f66c341eb2ce",
+        formData
+      );
+      return response.data.data.url; // Return the URL of the uploaded image
+    } catch (error) {
+      console.error("Image upload error: ", error);
+      // Show error alert using SweetAlert2
+      Swal.fire({
+        title: "Image upload failed!",
+        text: error.response ? error.response.data.message : error.message,
+        icon: "error",
+        confirmButtonText: "Okay",
+      });
+      return null; // Return null on error
+    }
+  };
+
+  // Function to handle the form submission
   const updateTouristSpot = async (event) => {
-    event.preventDefault();
-    const form = event.target;
+    event.preventDefault(); // Prevent default form submission behavior
 
-    const country = form.country.value;
-    const fullName = form.full_name.value;
-    const email = form.email.value;
-    const touristSpotName = form.tourists_spot_name.value;
-    const location = form.location.value;
-    const averageCost = form.average_cost.value;
-    const seasonality = form.seasonality.value;
-    const travelTime = form.travel_time.value;
-    const totalVisitorPerYear = form.total_visitors_per_year.value;
-    const shortDescription = form.short_description.value;
-    const imageUrl = form.image_url.value;
+    // Attempt to upload the image and get the new URL
+    const uploadedImageUrl = await uploadImage();
+    if (!uploadedImageUrl) {
+      Swal.fire({
+        title: "Upload Error!",
+        text: "Please upload a valid image.",
+        icon: "warning",
+        confirmButtonText: "Okay",
+      });
+      return; // Stop execution if upload failed
+    }
 
-    const updatedTouristSpotValue = {
-      country,
-      fullName,
-      email,
-      touristSpotName,
-      location,
-      averageCost,
-      seasonality,
-      travelTime,
-      totalVisitorPerYear,
-      shortDescription,
-      imageUrl,
+    // Prepare updated data including the new image URL
+    const updatedData = {
+      ...formValues,
+      imageUrl: uploadedImageUrl, // Update the image URL in the data
     };
 
-    console.log(updatedTouristSpotValue);
-
-    // Update data to the server
+    // Send the updated data to the server
     try {
       const res = await axios.put(
         `${BASE_URL}/tourist-spot/${_id}`,
-        updatedTouristSpotValue
+        updatedData
       );
 
+      // If the update was successful, show a success message
       if (res.data.modifiedCount > 0) {
         Swal.fire({
           title: "Success!",
@@ -71,10 +122,11 @@ const UpdateSpotCard = () => {
       }
     } catch (error) {
       console.error(error);
+      // Show error alert if update fails
       Swal.fire({
         title: "Error!",
         text: "Failed to update tourist spot",
-        icon: error.response ? error.response.data.message : error.message,
+        icon: "error",
         confirmButtonText: "Okay",
       });
     }
@@ -90,15 +142,16 @@ const UpdateSpotCard = () => {
           Update Tourist Spot
         </h1>
 
-        {/* Error message display */}
+        {/* Display error message if applicable */}
         {isError && (
           <div className="mb-4 p-3 bg-red-200 text-red-800 rounded-md">
             {message}
           </div>
         )}
 
+        {/* Form to update tourist spot information */}
         <form onSubmit={updateTouristSpot} className="flex flex-col space-y-6">
-          {/* Country name dropdown */}
+          {/* Country dropdown */}
           <div>
             <label
               htmlFor="country"
@@ -109,7 +162,8 @@ const UpdateSpotCard = () => {
               id="country"
               name="country"
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-              defaultValue={country || "Bangladesh"}>
+              value={formValues.country}
+              onChange={handleChange}>
               <option value="Bangladesh">Bangladesh</option>
               <option value="Thailand">Thailand</option>
               <option value="Indonesia">Indonesia</option>
@@ -119,19 +173,20 @@ const UpdateSpotCard = () => {
             </select>
           </div>
 
-          {/* Full name and Email input field */}
+          {/* Full name and Email input fields */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <div className="w-full mb-4 md:mb-0">
               <label
-                htmlFor="full_name"
+                htmlFor="fullName"
                 className="block text-lg font-medium text-gray-700 mb-2">
                 Full Name:
               </label>
               <input
                 type="text"
-                name="full_name"
+                name="fullName"
                 placeholder="Enter your full name"
-                defaultValue={fullName}
+                value={formValues.fullName}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -146,25 +201,27 @@ const UpdateSpotCard = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
-                defaultValue={email}
+                value={formValues.email}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
           </div>
 
-          {/* Tourist spot name and Location input field */}
+          {/* Tourist spot name and Location input fields */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <div className="w-full mb-4 md:mb-0">
               <label
-                htmlFor="tourists_spot_name"
+                htmlFor="touristSpotName"
                 className="block text-lg font-medium text-gray-700 mb-2">
                 Tourist Spot Name:
               </label>
               <input
                 type="text"
-                name="tourists_spot_name"
+                name="touristSpotName"
                 placeholder="Enter the spot name"
-                defaultValue={touristSpotName}
+                value={formValues.touristSpotName}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -179,25 +236,27 @@ const UpdateSpotCard = () => {
                 type="text"
                 name="location"
                 placeholder="Enter the location"
-                defaultValue={location}
+                value={formValues.location}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
           </div>
 
-          {/* Average cost and Seasonality input field */}
+          {/* Average cost and Seasonality input fields */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <div className="w-full mb-4 md:mb-0">
               <label
-                htmlFor="average_cost"
+                htmlFor="averageCost"
                 className="block text-lg font-medium text-gray-700 mb-2">
                 Average Cost:
               </label>
               <input
                 type="text"
-                name="average_cost"
+                name="averageCost"
                 placeholder="Enter average cost"
-                defaultValue={averageCost}
+                value={formValues.averageCost}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -212,40 +271,43 @@ const UpdateSpotCard = () => {
                 type="text"
                 name="seasonality"
                 placeholder="Enter seasonality"
-                defaultValue={seasonality}
+                value={formValues.seasonality}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
           </div>
 
-          {/* Travel time and Total visitors per year input field */}
+          {/* Travel time and Total visitors per year input fields */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <div className="w-full mb-4 md:mb-0">
               <label
-                htmlFor="travel_time"
+                htmlFor="travelTime"
                 className="block text-lg font-medium text-gray-700 mb-2">
                 Travel Time:
               </label>
               <input
                 type="text"
-                name="travel_time"
+                name="travelTime"
                 placeholder="Enter travel time"
-                defaultValue={travelTime}
+                value={formValues.travelTime}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
 
             <div className="w-full">
               <label
-                htmlFor="total_visitors_per_year"
+                htmlFor="totalVisitorPerYear"
                 className="block text-lg font-medium text-gray-700 mb-2">
                 Total Visitors Per Year:
               </label>
               <input
                 type="text"
-                name="total_visitors_per_year"
+                name="totalVisitorPerYear"
                 placeholder="Enter total visitors per year"
-                defaultValue={totalVisitorPerYear}
+                value={formValues.totalVisitorPerYear}
+                onChange={handleChange}
                 className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -254,35 +316,37 @@ const UpdateSpotCard = () => {
           {/* Short description input field */}
           <div className="w-full">
             <label
-              htmlFor="short_description"
+              htmlFor="shortDescription"
               className="block text-lg font-medium text-gray-700 mb-2">
               Short Description:
             </label>
             <textarea
-              name="short_description"
+              name="shortDescription"
               rows="5"
               placeholder="Enter a short description"
-              defaultValue={shortDescription}
+              value={formValues.shortDescription}
+              onChange={handleChange}
               className="block resize-none w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
             />
           </div>
 
-          {/* Image URL input field */}
+          {/* File input for image upload */}
           <div className="w-full">
             <label
-              htmlFor="image_url"
+              htmlFor="file"
               className="block text-lg font-medium text-gray-700 mb-2">
-              Image URL:
+              Upload Image:
             </label>
             <input
-              type="text"
-              name="image_url"
-              placeholder="Enter image URL"
-              defaultValue={imageUrl}
+              type="file"
+              name="file"
+              accept="image/*"
+              onChange={handleFileChange}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
             />
           </div>
 
+          {/* Submit button to update the tourist spot */}
           <div className="flex justify-center">
             <button
               className="bg-orange-500 w-full text-white py-3 text-xl rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
