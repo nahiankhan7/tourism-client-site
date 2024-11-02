@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import AddTouristBread from "../../components/shared/BreadCrumbs/AddTouristBread";
 import { AuthContext } from "../../providers/AuthProvider";
-import { IMAGEBB_ADD_API } from "../../config/api.Config";
+import { BASE_URL, IMAGEBB_ADD_API } from "../../config/api.Config";
 
 const AddTouristSpot = () => {
   const { user } = useContext(AuthContext); // Get user info from context
@@ -78,7 +78,7 @@ const AddTouristSpot = () => {
 
       try {
         // Send a POST request to the server with the form data
-        const res = await axios.post("http://localhost:5000/tourist-spot", {
+        const res = await axios.post(`${BASE_URL}/tourist-spot`, {
           ...formData,
           imageUrl: uploadedImageUrl,
         });

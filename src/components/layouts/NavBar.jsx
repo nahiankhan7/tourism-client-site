@@ -18,14 +18,18 @@ const NavBar = () => {
   const { user, logoutUser } = useContext(AuthContext);
 
   const handleLogOut = async () => {
-    const logout = await logoutUser();
-    console.log(logout.user);
+    await logoutUser();
+  };
+
+  const handleMobileMenuClick = () => {
+    setMobileMenuOpen(false);
   };
 
   const navLinks = (
     <>
       <NavLink
         to="/"
+        onClick={handleMobileMenuClick}
         className={({ isActive }) =>
           `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
             isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
@@ -35,6 +39,7 @@ const NavBar = () => {
       </NavLink>
       <NavLink
         to="/all-tourist-spots"
+        onClick={handleMobileMenuClick}
         className={({ isActive }) =>
           `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
             isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
@@ -44,6 +49,7 @@ const NavBar = () => {
       </NavLink>
       <NavLink
         to="/add-tourist-spot"
+        onClick={handleMobileMenuClick}
         className={({ isActive }) =>
           `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
             isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
@@ -53,12 +59,13 @@ const NavBar = () => {
       </NavLink>
       <NavLink
         to="/my-list"
+        onClick={handleMobileMenuClick}
         className={({ isActive }) =>
           `text-gray-200 hover:text-white hover:bg-[#007BFF] flex items-center transition duration-200 rounded-md ${
             isActive ? "bg-[#007BFF] text-white py-2 px-4" : "py-1 px-3"
           }`
         }>
-        My List{" "}
+        My List
       </NavLink>
     </>
   );
@@ -107,6 +114,7 @@ const NavBar = () => {
             <div className="items-center space-x-4 lg:space-x-6 hidden md:flex">
               <NavLink
                 to="/login"
+                onClick={handleMobileMenuClick}
                 className={({ isActive }) =>
                   `flex items-center text-gray-200 hover:text-[#007BFF] transition duration-200 ${
                     isActive ? "text-[#007BFF] py-2 px-4" : ""
@@ -118,6 +126,7 @@ const NavBar = () => {
 
               <NavLink
                 to="/register"
+                onClick={handleMobileMenuClick}
                 className={({ isActive }) =>
                   `flex items-center text-gray-200 hover:text-[#007BFF] transition duration-200 ${
                     isActive ? "text-[#007BFF] py-2 px-4" : ""
@@ -175,6 +184,7 @@ const NavBar = () => {
               <div className="flex flex-col space-y-4 mt-4 ml-3">
                 <NavLink
                   to="/login"
+                  onClick={handleMobileMenuClick}
                   className={({ isActive }) =>
                     `text-gray-200 hover:text-[#007BFF] flex items-center transition duration-200 ${
                       isActive ? "text-[#007BFF] py-2 px-4" : ""
@@ -184,6 +194,7 @@ const NavBar = () => {
                 </NavLink>
                 <NavLink
                   to="/register"
+                  onClick={handleMobileMenuClick}
                   className={({ isActive }) =>
                     `text-gray-200 hover:text-[#007BFF] flex items-center transition duration-200 ${
                       isActive ? "text-[#007BFF] py-2 px-4" : ""
