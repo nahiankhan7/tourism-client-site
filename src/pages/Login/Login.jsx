@@ -1,23 +1,22 @@
-import React, { useContext, useState } from "react"; // Import necessary React hooks and libraries
-import { FaGoogle, FaFacebook } from "react-icons/fa"; // Import icons for Google and GitHub
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Import routing utilities
-import { AuthContext } from "../../providers/AuthProvider"; // Import authentication context
+import React, { useContext, useState } from "react";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 
 const Login = () => {
-  // State variables for handling user input and error messages
+  // State variables to manage user input and error messages
   const [error, setError] = useState(""); // To store error messages
   const [email, setEmail] = useState(""); // To store user's email
   const [password, setPassword] = useState(""); // To store user's password
+  const [loading, setLoading] = useState(false); // To manage loading state during async operations
 
-  // Use context to get the loginUser function from AuthContext
+  // Access authentication functions from AuthContext
   const { loginUser, googleLogin, facebookLogin } = useContext(AuthContext);
+  const location = useLocation(); // Get the current location for redirecting after login
+  const navigate = useNavigate(); // Use navigate for programmatic navigation
 
-  // Hooks for routing
-  const location = useLocation(); // Current location
-  const navigate = useNavigate(); // Navigation function
-
-  // Function to validate the password according to specified criteria
+  // Function to validate the password against specified criteria
   const validatePassword = (password) => {
     const hasUpperCase = /[A-Z]/.test(password); // Check for uppercase letters
     const hasLowerCase = /[a-z]/.test(password); // Check for lowercase letters
@@ -25,59 +24,57 @@ const Login = () => {
     return hasUpperCase && hasLowerCase && isValidLength; // Return true if all conditions are met
   };
 
-  // Handle login with google
+  // Handle login with Google
   const handleGoogleLogin = async () => {
     try {
-      const gLogin = await googleLogin();
-      console.log("Google login successful:: ", gLogin);
-
-      // Redirect the user after successful login
-      const redirectPath = location.state?.from || "/login"; // Get redirect path from location state or default to '/login'
-      navigate(redirectPath); // Navigate to the redirect path
+      setLoading(true); // Start loading state
+      await googleLogin(); // Attempt to log in with Google
+      const redirectPath = location.state?.from || "/"; // Determine where to redirect after login
+      navigate(redirectPath); // Redirect the user
     } catch (error) {
-      console.log(error.message);
+      // Show error message if login fails
       Swal.fire({
         title: "Google login failed!",
         text: error.message,
         icon: "error",
         confirmButtonText: "Okay",
       });
+    } finally {
+      setLoading(false); // End loading state
     }
   };
 
+  // Handle login with Facebook
   const handleFacebookLogin = async () => {
     try {
-      const fLogin = await facebookLogin();
-      console.log("Facebook login successful:: ", fLogin);
-
-      // Redirect the user after successful login
-      const redirectPath = location.state?.from || "/login"; // Get redirect path from location state or default to '/login'
-      navigate(redirectPath); // Navigate to the redirect path
+      setLoading(true); // Start loading state
+      await facebookLogin(); // Attempt to log in with Facebook
+      const redirectPath = location.state?.from || "/"; // Determine redirect path
+      navigate(redirectPath); // Redirect the user
     } catch (error) {
-      console.log(error.message);
+      // Show error message if login fails
       Swal.fire({
         title: "Facebook login failed!",
         text: error.message,
         icon: "error",
         confirmButtonText: "Okay",
       });
+    } finally {
+      setLoading(false); // End loading state
     }
   };
 
-  // Function to handle form submission
+  // Function to handle form submission for email and password login
   const handleLoginSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
+    setLoading(true); // Start loading state
     try {
-      // Validate the password
+      // Validate the password before attempting login
       if (validatePassword(password)) {
-        // Attempt to log the user in
-        const result = await loginUser(email, password);
-        console.log(result.user); // Log the user object to console
-        setError(""); // Clear any previous errors
-
-        // Redirect the user after successful login
-        const redirectPath = location.state?.from || "/login"; // Get redirect path from location state or default to '/login'
-        navigate(redirectPath); // Navigate to the redirect path
+        await loginUser(email, password); // Attempt to log in with email and password
+        setError(""); // Clear previous error messages
+        const redirectPath = location.state?.from || "/"; // Determine redirect path
+        navigate(redirectPath); // Redirect the user
       } else {
         // Set an error message if password validation fails
         setError(
@@ -85,18 +82,18 @@ const Login = () => {
         );
       }
     } catch (error) {
-      console.error("Login error:", error); // Log any error that occurs during login
-      setError("Login failed. Please check your email and password."); // Set error message for user
+      console.error("Login error:", error); // Log any error during login
+      setError("Login failed. Please check your email and password."); // Display a user-friendly error message
+    } finally {
+      setLoading(false); // End loading state
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      {/* Main container for the login form */}
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">Login Form</h2>
         <form className="space-y-4" onSubmit={handleLoginSubmit}>
-          {/* Email input field */}
           <div>
             <label
               htmlFor="email"
@@ -113,7 +110,6 @@ const Login = () => {
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          {/* Password input field */}
           <div>
             <label
               htmlFor="password"
@@ -132,31 +128,43 @@ const Login = () => {
             {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}{" "}
             {/* Display error message if exists */}
           </div>
-          {/* Registration link */}
           <div className="flex items-center space-x-2">
             <span>Don't have an account?</span>
             <Link to="/register" className="text-blue-500 hover:underline">
               Register
-            </Link>
+            </Link>{" "}
+            {/* Link to registration page */}
           </div>
-          {/* Submit button for logging in */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
-            Login
+            disabled={loading} // Disable button while loading
+            className={`w-full py-2 rounded-md transition duration-200 ${
+              loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+            } text-white`}>
+            {loading ? "Logging in..." : "Login"}{" "}
+            {/* Change button text based on loading state */}
           </button>
         </form>
-        {/* Buttons for social login */}
         <div className="mt-6 space-y-4">
           <button
-            onClick={handleGoogleLogin}
-            className="flex items-center justify-center w-full bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition duration-200">
-            <FaGoogle className="mr-2" /> Login with Google
+            onClick={handleGoogleLogin} // Handle Google login on click
+            className={`flex items-center justify-center w-full py-2 rounded-md transition duration-200 ${
+              loading ? "bg-gray-400" : "bg-gray-200 hover:bg-gray-300"
+            } text-gray-700`}
+            disabled={loading} // Disable button while loading
+          >
+            <FaGoogle className="mr-2" /> Login with Google{" "}
+            {/* Google login button */}
           </button>
           <button
-            onClick={handleFacebookLogin}
-            className="flex items-center justify-center w-full bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition duration-200">
-            <FaFacebook className="mr-2" /> Login with Facebook
+            onClick={handleFacebookLogin} // Handle Facebook login on click
+            className={`flex items-center justify-center w-full py-2 rounded-md transition duration-200 ${
+              loading ? "bg-gray-400" : "bg-gray-200 hover:bg-gray-300"
+            } text-gray-700`}
+            disabled={loading} // Disable button while loading
+          >
+            <FaFacebook className="mr-2" /> Login with Facebook{" "}
+            {/* Facebook login button */}
           </button>
         </div>
       </div>
@@ -164,4 +172,4 @@ const Login = () => {
   );
 };
 
-export default Login; // Export the Login component for use in other parts of the app
+export default Login;
