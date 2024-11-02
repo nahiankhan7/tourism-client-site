@@ -1,14 +1,18 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import AddTouristBread from "../../components/shared/BreadCrumbs/AddTouristBread";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const AddTouristSpot = () => {
+  const { user } = useContext(AuthContext);
+  console.log("User form add page ::: ", user);
+
   // State to hold form input values
   const [formData, setFormData] = useState({
     country: "Bangladesh", // Default selected country
-    fullName: "",
-    email: "",
+    fullName: `${user.displayName}`,
+    email: `${user.email}`,
     touristSpotName: "",
     location: "",
     averageCost: "",

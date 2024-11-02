@@ -35,7 +35,7 @@ const fetchWithErrorHandling = async (url) => {
 
 const Index = () => {
   const { user } = useContext(AuthContext) || {}; // Use optional chaining
-  console.log("user:::", user);
+  // console.log("user:::", user);
 
   const routes = createBrowserRouter([
     {

@@ -47,10 +47,11 @@ const Register = () => {
           confirmButtonText: "Okay",
         });
 
-        setError(""); // Clear any previous error messages
+        // Clear form fields after successful registration
+        resetForm();
 
         // Redirect the user to the previous location or the registration page
-        const redirectPath = location.state?.from || "/register";
+        const redirectPath = location.state?.from || "/";
         navigate(redirectPath);
       } else {
         // Set an error message if password validation fails
@@ -59,7 +60,7 @@ const Register = () => {
         );
       }
     } catch (error) {
-      console.error(error.message); // Log any errors that occur
+      console.error("Registration error:", error.message); // Log any errors that occur
       // Display an error message using SweetAlert
       Swal.fire({
         title: "Error!",
@@ -68,6 +69,15 @@ const Register = () => {
         confirmButtonText: "Okay",
       });
     }
+  };
+
+  // Function to reset the form fields
+  const resetForm = () => {
+    setName(""); // Clear name field
+    setEmail(""); // Clear email field
+    setPhoto(""); // Clear photo URL field
+    setPassword(""); // Clear password field
+    setError(""); // Clear error messages
   };
 
   return (
@@ -142,7 +152,7 @@ const Register = () => {
             />
           </div>
           {/* Display error message if exists */}
-          {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}{" "}
+          {error && <p className="mt-2 text-red-600 text-sm">{error}</p>}
           <div className="flex items-center space-x-2">
             <span>Already have an account?</span>
             <Link to="/login" className="text-blue-500 hover:underline">
