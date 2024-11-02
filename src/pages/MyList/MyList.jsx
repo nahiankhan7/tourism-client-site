@@ -6,7 +6,7 @@ import myListBanner from "../../assets/images/my-list-banner.png";
 import MyListBread from "../../components/shared/BreadCrumbs/MyListBread";
 
 const MyList = () => {
-  const { isError, message, data } = useLoaderData();
+  const { data } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [spotCard, setSpotCard] = useState(data || []);
 
@@ -31,8 +31,6 @@ const MyList = () => {
       </div>
 
       <div className="p-4 flex flex-col">
-        {isError && <p className="text-red-600 mt-2">{message}</p>}
-
         {loading ? (
           <div className="flex justify-center items-center min-h-screen">
             <ColorRing

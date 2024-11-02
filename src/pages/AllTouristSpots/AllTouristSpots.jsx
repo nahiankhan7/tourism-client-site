@@ -6,7 +6,7 @@ import allTouristBanner from "../../assets/images/all-tourist-banner.png";
 import AllTouristBread from "../../components/shared/BreadCrumbs/AllTouristBread";
 
 const AllTouristSpots = () => {
-  const { isError, message, data } = useLoaderData();
+  const { data } = useLoaderData();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +28,6 @@ const AllTouristSpots = () => {
         />
       </div>
       <div className="p-4 flex flex-col">
-        {isError && <p className="text-red-600 mt-2">{message}</p>}
-
         {loading ? (
           <div className="flex justify-center items-center min-h-screen">
             <ColorRing
