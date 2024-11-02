@@ -49,6 +49,10 @@ const Login = () => {
     try {
       const fLogin = await facebookLogin();
       console.log("Facebook login successful:: ", fLogin);
+
+      // Redirect the user after successful login
+      const redirectPath = location.state?.from || "/login"; // Get redirect path from location state or default to '/login'
+      navigate(redirectPath); // Navigate to the redirect path
     } catch (error) {
       console.log(error.message);
       Swal.fire({

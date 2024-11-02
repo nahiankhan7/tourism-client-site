@@ -13,7 +13,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   // Fetch data using useLoaderData
-  const { isError, message, data } = useLoaderData() || {};
+  const { data } = useLoaderData() || {};
 
   // Effect to set loading to false when data is available
   useEffect(() => {
@@ -70,11 +70,7 @@ const Home = () => {
         <h1 className="text-center text-4xl font-bold text-gray-800 mb-6">
           Explore Tourist Places
         </h1>
-        {isError && (
-          <p className="text-red-600 text-center font-semibold p-4">
-            {message} {/* Display error message if data fetching fails */}
-          </p>
-        )}
+
         {loading ? (
           // Show loading spinner while data is being fetched
           <div className="flex justify-center items-center min-h-screen">
