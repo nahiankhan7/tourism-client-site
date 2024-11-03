@@ -12,7 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false); // To manage loading state during async operations
 
   // Access authentication functions from AuthContext
-  const { loginUser, googleLogin, facebookLogin } = useContext(AuthContext);
+  const { loginUser, googleLogin } = useContext(AuthContext);
   const location = useLocation(); // Get the current location for redirecting after login
   const navigate = useNavigate(); // Use navigate for programmatic navigation
 
@@ -35,26 +35,6 @@ const Login = () => {
       // Show error message if login fails
       Swal.fire({
         title: "Google login failed!",
-        text: error.message,
-        icon: "error",
-        confirmButtonText: "Okay",
-      });
-    } finally {
-      setLoading(false); // End loading state
-    }
-  };
-
-  // Handle login with Facebook
-  const handleFacebookLogin = async () => {
-    try {
-      setLoading(true); // Start loading state
-      await facebookLogin(); // Attempt to log in with Facebook
-      const redirectPath = location.state?.from || "/"; // Determine redirect path
-      navigate(redirectPath); // Redirect the user
-    } catch (error) {
-      // Show error message if login fails
-      Swal.fire({
-        title: "Facebook login failed!",
         text: error.message,
         icon: "error",
         confirmButtonText: "Okay",
@@ -155,16 +135,6 @@ const Login = () => {
           >
             <FaGoogle className="mr-2" /> Login with Google{" "}
             {/* Google login button */}
-          </button>
-          <button
-            onClick={handleFacebookLogin} // Handle Facebook login on click
-            className={`flex items-center justify-center w-full py-2 rounded-md transition duration-200 ${
-              loading ? "bg-gray-400" : "bg-gray-200 hover:bg-gray-300"
-            } text-gray-700`}
-            disabled={loading} // Disable button while loading
-          >
-            <FaFacebook className="mr-2" /> Login with Facebook{" "}
-            {/* Facebook login button */}
           </button>
         </div>
       </div>
