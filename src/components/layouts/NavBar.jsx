@@ -72,7 +72,7 @@ const NavBar = () => {
 
   return (
     <nav className="bg-[#1A1A19] p-4 shadow-md ">
-      <div className="container mx-auto">
+      <div className="max-w-7xl mx-auto px-2">
         <div className="flex justify-between items-center ">
           <NavLink className="flex items-center space-x-2" to="/">
             <img src={logo} width={25} alt="" />

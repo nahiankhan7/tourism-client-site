@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { ColorRing } from "react-loader-spinner";
 import { FaArrowAltCircleRight } from "react-icons/fa";
+import About from "./About";
 
 const Home = () => {
   // State to manage loading status
@@ -66,7 +67,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Banner />
-      <div className="my-8">
+      <div className="mt-14">
         <h1 className="text-center text-4xl font-bold text-gray-800 mb-6">
           Explore Tourist Places
         </h1>
@@ -115,6 +116,7 @@ const Home = () => {
           </div>
         )}
       </div>
+      <About />
     </div>
   );
 };
